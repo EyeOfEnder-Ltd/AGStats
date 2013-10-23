@@ -1,0 +1,7 @@
+name: AGStats
+main: me.libraryaddict.StatsSystem.StatsSystem
+version: 1
+depend: [SimpleHungergames, AGKits]
+commands:
+  stats:
+  savekit:
