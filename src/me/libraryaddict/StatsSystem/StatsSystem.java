@@ -22,15 +22,14 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class StatsSystem extends JavaPlugin implements Listener {
-    ConcurrentHashMap<String, Stats> playerStats = new ConcurrentHashMap();
+    protected ConcurrentHashMap<String, Stats> playerStats = new ConcurrentHashMap<String, Stats>();
     public String SQL_USER;
     public String SQL_PASS;
     public String SQL_DATA;
     public String SQL_HOST;
-    StatsSaveThread saveThread;
-    StatsLoadThread loadThread;
-    KitsApi kits = new KitsApi();
-    boolean run = true;
+    private StatsSaveThread saveThread;
+    private StatsLoadThread loadThread;
+    private KitsApi kits = new KitsApi();
     private Config config;
 
     public void onEnable() {
@@ -52,7 +51,6 @@ public class StatsSystem extends JavaPlugin implements Listener {
     }
 
     public void onDisable() {
-        this.run = false;
         for (Player p : Bukkit.getOnlinePlayers())
             p.kickPlayer("Bye bye!, Game shutdown for weird reasons!");
         while (this.loadThread.joinQueue.size() > 0) {
@@ -74,8 +72,8 @@ public class StatsSystem extends JavaPlugin implements Listener {
                 e.printStackTrace();
             }
         }
-        this.loadThread.stop();
-        this.saveThread.stop();
+        this.loadThread.terminate();
+        this.saveThread.terminate();
     }
 
     @EventHandler

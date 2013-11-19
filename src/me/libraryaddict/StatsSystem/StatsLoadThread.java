@@ -1,21 +1,20 @@
 package me.libraryaddict.StatsSystem;
 
-import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class StatsLoadThread extends Thread {
-    public Connection con = null;
-    ConcurrentLinkedQueue<String> joinQueue = new ConcurrentLinkedQueue();
-    StatsSystem plugin;
+    protected Connection con = null;
+    protected ConcurrentLinkedQueue<String> joinQueue = new ConcurrentLinkedQueue<String>();
+    private StatsSystem plugin;
+    private boolean running;
 
-    StatsLoadThread(StatsSystem statsSystem) {
+    protected StatsLoadThread(StatsSystem statsSystem) {
         this.plugin = statsSystem;
     }
 
@@ -68,10 +67,15 @@ public class StatsLoadThread extends Thread {
         }
     }
 
+    public void terminate() {
+        running = false;
+    }
+
     public void run() {
         System.out.println("Stats load thread started");
         SQLconnect();
-        while (true) {
+        running = true;
+        while (running) {
             if (this.joinQueue.peek() != null) {
                 String playername = (String) this.joinQueue.poll();
                 try {

@@ -1,6 +1,6 @@
 name: AGStats
 main: me.libraryaddict.StatsSystem.StatsSystem
-version: 1
+version: 1.0.1
 depend: [SimpleHungergames, AGKits]
 commands:
   stats:

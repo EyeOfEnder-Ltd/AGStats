@@ -1,6 +1,5 @@
 package me.libraryaddict.StatsSystem;
 
-import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,11 +7,12 @@ import java.sql.Statement;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class StatsSaveThread extends Thread {
-    ConcurrentLinkedQueue<Stats> quitQueue = new ConcurrentLinkedQueue();
-    StatsSystem plugin;
-    public Connection con = null;
+    protected Connection con = null;
+    protected ConcurrentLinkedQueue<Stats> quitQueue = new ConcurrentLinkedQueue<Stats>();
+    private StatsSystem plugin;
+    private boolean running;
 
-    public StatsSaveThread(StatsSystem stats) {
+    protected StatsSaveThread(StatsSystem stats) {
         this.plugin = stats;
     }
 
@@ -42,10 +42,15 @@ public class StatsSaveThread extends Thread {
         }
     }
 
+    public void terminate() {
+        running = false;
+    }
+
     public void run() {
         System.out.println("Stats Save Thread started");
         SQLconnect();
-        while (true) {
+        running = true;
+        while (running) {
             if (this.quitQueue.peek() != null) {
                 Stats stats = (Stats) this.quitQueue.poll();
                 String savedKit = stats.getSavedKit();
